@@ -1,0 +1,718 @@
+[
+    {
+        "id": "48cc650f008281f7",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b95a78ca2a72a366",
+        "type": "mqtt in",
+        "z": "48cc650f008281f7",
+        "name": "",
+        "topic": "fruit_data/gas",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "134da721c8ac0305",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 80,
+        "wires": [
+            [
+                "ed9d3836f2db848d"
+            ]
+        ]
+    },
+    {
+        "id": "ed9d3836f2db848d",
+        "type": "ui_gauge",
+        "z": "48cc650f008281f7",
+        "name": "Gas reading",
+        "group": "6eca163bf3c0041c",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Gas Reading",
+        "label": "ppm",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1024",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 450,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "aaef66a38cb03a2c",
+        "type": "mqtt in",
+        "z": "48cc650f008281f7",
+        "name": "",
+        "topic": "fruit_data/temperature",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "134da721c8ac0305",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 180,
+        "y": 140,
+        "wires": [
+            [
+                "a9b7aabf40bb39d6"
+            ]
+        ]
+    },
+    {
+        "id": "a9b7aabf40bb39d6",
+        "type": "ui_gauge",
+        "z": "48cc650f008281f7",
+        "name": "Temperature (°C)",
+        "group": "4d17a7287a9d0285",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "60",
+        "colors": [
+            "#5fb2f2",
+            "#f7f77e",
+            "#f76e6e"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 490,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "bd66d3710c0a7b6b",
+        "type": "mqtt in",
+        "z": "48cc650f008281f7",
+        "name": "",
+        "topic": "fruit_data/humidity",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "134da721c8ac0305",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 200,
+        "wires": [
+            [
+                "29f0ad35b8ab1832"
+            ]
+        ]
+    },
+    {
+        "id": "29f0ad35b8ab1832",
+        "type": "ui_gauge",
+        "z": "48cc650f008281f7",
+        "name": "Humidity (%)",
+        "group": "fd8663d24d3238bc",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Humidity",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#7ec5fb",
+            "#ffffff",
+            "#f7ef82"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 470,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "51a303de3ac53f50",
+        "type": "function",
+        "z": "48cc650f008281f7",
+        "name": "Python File",
+        "func": "let gas = msg.payload;\nmsg.gas = gas;\nmsg.execCommand = `python -u \"C:\\\\Users\\\\ASUS\\\\OneDrive\\\\Documents\\\\AltairRapidMiner\\\\AI Studio\\\\Repositories\\\\Final Year Project\\\\processor\\\\Downloads\\\\predict.py\" ${gas}`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 340,
+        "wires": [
+            [
+                "0585ca898a65ea47"
+            ]
+        ]
+    },
+    {
+        "id": "34ef4f47d4a611e6",
+        "type": "mqtt in",
+        "z": "48cc650f008281f7",
+        "name": "",
+        "topic": "fruit_data/gas",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "134da721c8ac0305",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 340,
+        "wires": [
+            [
+                "51a303de3ac53f50"
+            ]
+        ]
+    },
+    {
+        "id": "f1cd70ca52c1bc79",
+        "type": "function",
+        "z": "48cc650f008281f7",
+        "name": "Alert Message",
+        "func": "let output = msg.payload.toString().trim();\nlet lines = output.split(\"\\n\");\n\n// Extract and sanitize values\nlet status = (lines[0] || \"unknown\").trim();\nlet gas = (lines[1] || \"unknown\").trim();\n\nif (status === \"Fresh\") {\n    return null; // Stop the flow, no message sent\n}\n\n// Friendly status message\nlet condition = \"🤔 Unknown condition\";\nif (status === \"Overripe\") condition = \"🟡 Your Fruit is about to Rot. Consume Now!\";\nelse if (status === \"Root\" || status === \"Rotten\") condition = \"🔴 Rotten – It is not safe to eat anymore.\";\n\n// Date and time formatting\nlet now = new Date();\nlet hour12 = now.getHours() % 12 || 12;\nlet minutes = now.getMinutes().toString().padStart(2, '0');\nlet ampm = now.getHours() >= 12 ? \"PM\" : \"AM\";\nlet time = `${hour12}:${minutes} ${ampm}`;\nlet date = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;\n\n// Telegram message format\nmsg.payload = {\n  chatId: \"5755480500\",\n  type: \"message\",\n  content: `🍎 Fruit Ripeness Update\\n\\n📊 Status: ${status}\\n${condition}\\n\\n💨 Gas Level: ${gas}\\n📅 Recorded: ${time} | ${date}`\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 360,
+        "wires": [
+            [
+                "fba35e5bcaaf99a1"
+            ]
+        ]
+    },
+    {
+        "id": "011f2a47d010c4de",
+        "type": "telegram sender",
+        "z": "48cc650f008281f7",
+        "name": "",
+        "bot": "218fe08a06cf79ad",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1150,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0585ca898a65ea47",
+        "type": "exec",
+        "z": "48cc650f008281f7",
+        "command": "",
+        "addpay": "execCommand",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "",
+        "x": 570,
+        "y": 340,
+        "wires": [
+            [
+                "f1cd70ca52c1bc79",
+                "c67dd489eb3ebac9"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "c67dd489eb3ebac9",
+        "type": "debug",
+        "z": "48cc650f008281f7",
+        "name": "debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "fba35e5bcaaf99a1",
+        "type": "delay",
+        "z": "48cc650f008281f7",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "1",
+        "timeoutUnits": "minutes",
+        "rate": "3",
+        "nbRateUnits": "1",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 930,
+        "y": 360,
+        "wires": [
+            [
+                "011f2a47d010c4de"
+            ]
+        ]
+    },
+    {
+        "id": "912f367ee921c4cd",
+        "type": "mqtt in",
+        "z": "48cc650f008281f7",
+        "name": "",
+        "topic": "fruit_data/temperature",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "134da721c8ac0305",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 720,
+        "y": 100,
+        "wires": [
+            [
+                "abb0f99364ba2627"
+            ]
+        ]
+    },
+    {
+        "id": "35e9bad515d8a05a",
+        "type": "mqtt in",
+        "z": "48cc650f008281f7",
+        "name": "",
+        "topic": "fruit_data/humidity",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "134da721c8ac0305",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 710,
+        "y": 160,
+        "wires": [
+            [
+                "020b63f949bc7ed8"
+            ]
+        ]
+    },
+    {
+        "id": "383e5c1e16aab9b4",
+        "type": "mqtt in",
+        "z": "48cc650f008281f7",
+        "name": "",
+        "topic": "fruit_data/gas",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "134da721c8ac0305",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 690,
+        "y": 220,
+        "wires": [
+            [
+                "4efb9b60bc827e83"
+            ]
+        ]
+    },
+    {
+        "id": "020b63f949bc7ed8",
+        "type": "function",
+        "z": "48cc650f008281f7",
+        "name": "Humidity Processing",
+        "func": "flow.set(\"humid\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4efb9b60bc827e83",
+        "type": "function",
+        "z": "48cc650f008281f7",
+        "name": "Gas Processing",
+        "func": "flow.set(\"gas\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "abb0f99364ba2627",
+        "type": "function",
+        "z": "48cc650f008281f7",
+        "name": "Temperature Processing",
+        "func": "flow.set(\"temp\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1030,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8008fa44f1416b61",
+        "type": "telegram receiver",
+        "z": "48cc650f008281f7",
+        "name": "",
+        "bot": "218fe08a06cf79ad",
+        "saveDataDir": "",
+        "filterCommands": true,
+        "x": 170,
+        "y": 420,
+        "wires": [
+            [
+                "db947c160983cd10"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "db947c160983cd10",
+        "type": "function",
+        "z": "48cc650f008281f7",
+        "name": "Telegram Command",
+        "func": "if (msg.payload.content === \"/status\") {\n    return msg;\n}\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 420,
+        "wires": [
+            [
+                "851084fc2ef3e99e"
+            ]
+        ]
+    },
+    {
+        "id": "851084fc2ef3e99e",
+        "type": "function",
+        "z": "48cc650f008281f7",
+        "name": "Python File 2",
+        "func": "let gas = flow.get(\"gas\");\nlet temp = flow.get(\"temp\");\nlet humid = flow.get(\"humid\");\n\nmsg.payload = \"\";\nmsg.execCommand = `python -u \"C:\\\\Users\\\\ASUS\\\\OneDrive\\\\Documents\\\\AltairRapidMiner\\\\AI Studio\\\\Repositories\\\\Final Year Project\\\\processor\\\\Downloads\\\\predict2.py\" ${gas}`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 420,
+        "wires": [
+            [
+                "c7534d220a439cc4"
+            ]
+        ]
+    },
+    {
+        "id": "c7534d220a439cc4",
+        "type": "exec",
+        "z": "48cc650f008281f7",
+        "command": "",
+        "addpay": "execCommand",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "",
+        "x": 790,
+        "y": 420,
+        "wires": [
+            [
+                "74882b0788c3a488"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "74882b0788c3a488",
+        "type": "function",
+        "z": "48cc650f008281f7",
+        "name": "Status Message",
+        "func": "let prediction = msg.payload.trim().split(\"\\n\")[0];  // Only get first line\nlet temp = flow.get(\"temp\");\nlet humid = flow.get(\"humid\");\nlet gas = flow.get(\"gas\");\n\nmsg.payload = {\n    chatId: \"5755480500\",\n    type: \"message\",\n    content:\n        `🌟 Fruit Monitoring Report 🍓\\n\\n` +\n        `🌡️ Temperature: ${temp} °C\\n` +\n        `💧 Humidity: ${humid} %\\n` +\n        `🟠 Gas Level: ${gas}\\n\\n` +\n        `🔮 Predicted Status: ${prediction} 🍑`\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 420,
+        "wires": [
+            [
+                "48c17a8faf579d20"
+            ]
+        ]
+    },
+    {
+        "id": "48c17a8faf579d20",
+        "type": "telegram sender",
+        "z": "48cc650f008281f7",
+        "name": "",
+        "bot": "218fe08a06cf79ad",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1190,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "16747b252e127ee1",
+        "type": "mqtt in",
+        "z": "48cc650f008281f7",
+        "name": "",
+        "topic": "fruit_data/gas",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "134da721c8ac0305",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 260,
+        "wires": [
+            [
+                "2d44ed10a13fdc89"
+            ]
+        ]
+    },
+    {
+        "id": "2d44ed10a13fdc89",
+        "type": "ui_chart",
+        "z": "48cc650f008281f7",
+        "name": "",
+        "group": "ce30d4664973f5fd",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "label": "Gas Reading Chart",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 470,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "134da721c8ac0305",
+        "type": "mqtt-broker",
+        "name": "Mosquitto",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "tls": "dbec2517175acff9",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "6eca163bf3c0041c",
+        "type": "ui_group",
+        "name": "Gas Reading",
+        "tab": "e944b8dd1c4de0c3",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "4d17a7287a9d0285",
+        "type": "ui_group",
+        "name": "Temperature",
+        "tab": "e944b8dd1c4de0c3",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "fd8663d24d3238bc",
+        "type": "ui_group",
+        "name": "Humidity",
+        "tab": "e944b8dd1c4de0c3",
+        "order": 3,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "218fe08a06cf79ad",
+        "type": "telegram bot",
+        "botname": "rottenfruitdetection",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": 300,
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": 6667,
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbothost": "0.0.0.0",
+        "localbotport": 8443,
+        "publicbotport": 8443,
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    },
+    {
+        "id": "ce30d4664973f5fd",
+        "type": "ui_group",
+        "name": "Chart",
+        "tab": "e944b8dd1c4de0c3",
+        "order": 4,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "dbec2517175acff9",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "mosquitto.org.crt",
+        "servername": "",
+        "verifyservercert": true,
+        "alpnprotocol": ""
+    },
+    {
+        "id": "e944b8dd1c4de0c3",
+        "type": "ui_tab",
+        "name": "Rotten Fruit Detection",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]

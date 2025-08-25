@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><process version="10.5.000">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="10.5.000" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="false" class="productivity:execute_process" compatibility="10.5.000" expanded="true" height="103" name="Execute Fruit Data Predictions 2" width="90" x="380" y="340">
+        <parameter key="process_location" value="Fruit Data Predictions 2"/>
+        <parameter key="use_input" value="true"/>
+        <parameter key="store_output" value="false"/>
+        <parameter key="propagate_metadata_recursively" value="true"/>
+        <parameter key="cache_process" value="true"/>
+        <list key="macros"/>
+        <parameter key="fail_for_unknown_macros" value="true"/>
+      </operator>
+      <operator activated="true" class="python_scripting:execute_python" compatibility="11.0.001" expanded="true" height="82" name="Execute Python" width="90" x="179" y="85">
+        <parameter key="script" value="import pandas as pd&#10;from sklearn.tree import DecisionTreeClassifier&#10;import joblib&#10;&#10;# Get input from RapidMiner&#10;data = pd.DataFrame(rm_main)&#10;&#10;# Make sure correct columns are used&#10;X = data[['day', 'gas']]&#10;y = data['status']&#10;&#10;# Train Decision Tree&#10;model = DecisionTreeClassifier()&#10;model.fit(X, y)&#10;&#10;# Export model to file (optional, for Node-RED later)&#10;joblib.dump(model, 'fruit_ripeness_model.pkl')&#10;&#10;# Output back to RapidMiner&#10;rm_output = data&#10;"/>
+        <parameter key="notebook_cell_tag_filter" value=""/>
+        <parameter key="use_default_python" value="true"/>
+        <parameter key="package_manager" value="conda (anaconda)"/>
+        <parameter key="use_macros" value="false"/>
+      </operator>
+      <operator activated="true" class="write_file" compatibility="10.5.000" expanded="true" height="68" name="Write File" width="90" x="447" y="85">
+        <parameter key="resource_type" value="file"/>
+        <parameter key="mime_type" value="application/octet-stream"/>
+      </operator>
+      <operator activated="false" class="store" compatibility="10.5.000" expanded="true" height="68" name="Store" width="90" x="447" y="340">
+        <parameter key="repository_entry" value="../data/predictions 2"/>
+      </operator>
+      <connect from_op="Execute Python" from_port="output 1" to_op="Write File" to_port="file"/>
+      <connect from_op="Write File" from_port="file" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+    </process>
+  </operator>
+</process>
